@@ -1,121 +1,89 @@
-
  
+var pros_exist = false;
+var pros = []
+var ids=[]
+// var advancedFormat = require('dayjs/plugin/advancedFormat')
+// dayjs.extend(advancedFormat)
+// console.log(dayjs().format('Q Do k kk X x'))
+
 var hour = dayjs().format('hh a');
 var curTime = dayjs().format('dddd, MMMM D[th]')
 $('#currentDay').text(curTime)
-// divElements = document.querySelectorAll('div[id]');
-// divElements.forEach(divElement => {
-//      projects.push(divElement);
 
-var divElements = [];
-var projects = [];
-
-var boxes = document.querySelectorAll('.time-block');
-boxes.forEach(box => {
-   var textareaEl = box.querySelector('.description');
-  // Add an event listener to the textarea element
-    textareaEl.addEventListener('input', function() {
-      var text = textareaEl.value;
-    //  text = event.target.value;
-    // saveProjects(projects)
-    
-      // Log the textarea value to the console when input occurs
-      console.log('Textarea value:', text); 
-     })
-    
-    //box.setAttribute('style', 'background-color: yellow;');
-  
-    } ) 
-    divElements = document.querySelectorAll('div[id]');
-    divElements.forEach(divElement => {
-     projects.push(divElement);
-    })
-    saveProjects(projects)
-    readProjects()
-    printProject()
-
-// Get all div elements in the document which has id attribute
-
-    //  console.log('outerHTML = ',divElement.outerHTML)
-    // console.log(projects)
-   
-
-// // Loop through the NodeList and remove each element
-function clearPage(boxes){
-  boxes.forEach(element => {
-  element.remove();
- });
+var hourtot = document.querySelectorAll('div[id]');
+for( var hour_id of hourtot) {
+  ids.push(hour_id.id)
 }
  
-
-
-   // equal to => $(document).ready(function()  This ensures that your JavaScript/jQuery code doesn't run until the entire HTML document is ready to be manipulated. 
-   $(function () {  
-  
- 
-});
-
-function getTimeStat(){
-      var hram = document.querySelector('.time-block').innerHTML;
-      var hr_am = hram.substring(hram.length -2);
-      var hr = parseInt(hram.substring(0,hram.length -2))
-      var hour = dayjs().hour()
-
-      if (hr_am == 'pm') {
-         hr += 12;
-      }
-
-      if (hr === hour){
-        timeStat = 'present';
-      } else if (hr < hour) {
-        timeStat = 'past';
-      } else {
-        timeStat= 'future';
-      }
-      return timeStat;
-} 
-
-function printProject(){
-    var container = document.querySelector('.container-fluid');  
-    projects.forEach((item) => { 
-    var divElement = document.createElement('div');
-    divElement.innerHTML = item.outerHTML;
-    container.appendChild(divElement);
-    //console.log(container);
-   })
-}
-function readProjects() {
-  var projects = localStorage.getItem('projects');
-  if (projects) {
-    projects = JSON.parse(projects);
-  } else {
-    projects = [];
+if (localStorage.getItem('pros')){
+   pros = JSON.parse(localStorage.getItem('pros'))
+   pros_exist = true;
   }
-  return projects;
-}
+ids.forEach(hour_id=>{  
+     console.log("hour_id = ", hour_id) 
+      const parentDiv = document.getElementById(hour_id);
+      var  textareaElement = parentDiv.querySelector('textarea.description');
+      var buttonElement = parentDiv.querySelector('button');
+      var hr = parentDiv.querySelector('.hour').innerHTML;
+       
+      getTimeStat(hr,parentDiv);
+      if (pros_exist){
+        pros.forEach( pro => {
+            if( pro.hour === hour_id)  {
+              textareaElement.innerHTML = pro.des;
+            }
+          })
+      }
+     
+      buttonElement.addEventListener('click', function() {
+          const descriptionValue = textareaElement.value; 
+          var newdata = {
+            hour: hour_id,
+            des: descriptionValue
+          }
+          pros.push(newdata)
+          localStorage.setItem('pros', JSON.stringify(pros));
+         document.getElementById("showLine").innerHTML = `Appointment Added to localStorage`
 
 
-function saveProjects(projects) {
-  localStorage.setItem('projects', JSON.stringify(projects));
-  clearPage(boxes);
-  var projects = readProjects();
-}
+});
+})
  
-// readProjects();
+function getTimeStat(time,parentDiv){
+  var timeStat = '';
+  var hr_am = time.substring(time.length - 2);
+  var hr = parseInt(time.substring(0,time.length - 2))
+  var hour = dayjs().hour()
+  
+  console.log(time, hr_am)
 
+  if (hr_am === 'PM' && hr !== 12) {
+     hr += 12;
+  }
 
- // Get the parent div element by its ID
-// const parentElement = document.getElementById('parentDiv');
+  console.log('hr = ',hr , 'hour = ', hour)
 
-// // Get all child elements with different IDs that belong to the parent element
-// const childElements = parentElement.children;
+  if (hr === hour){
+    timeStat = 'present';
+  } else if (hr < hour) {
+    timeStat = 'past';
+  } else {
+    timeStat= 'future';
+  }
+  if (parentDiv.classList.contains('past')) {
+      parentDiv.classList.remove('past'); // Remove class 'a'
+      parentDiv.classList.add(timeStat);    // Add class 'd'
+  }
+  if (parentDiv.classList.contains('present')) {
+    parentDiv.classList.remove('present'); // Remove class 'a'
+    parentDiv.classList.add(timeStat);    // Add class 'd'
+  }
+  if (parentDiv.classList.contains('future')) {
+    parentDiv.classList.remove('future'); // Remove class 'a'
+    parentDiv.classList.add(timeStat);    // Add class 'd'
+  }
+   
+ 
 
-// // Iterate over each child element to access its unique ID
-// for (let i = 0; i < childElements.length; i++) {
-//     // Access the unique ID of each child element
-//     const uniqueID = childElements[i].id;
-
-//     // Log the unique ID to the console (or perform other operations as needed)
-//     console.log('Unique ID:', uniqueID);
-// }
-
+   
+} 

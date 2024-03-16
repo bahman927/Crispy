@@ -54,6 +54,7 @@ function getTimeStat(time,parentDiv){
   var hr_am = time.substring(time.length - 2);
   var hr = parseInt(time.substring(0,time.length - 2))
   var hour = dayjs().hour()
+  
   console.log(time, hr_am)
 
   if (hr_am === 'PM' && hr !== 12) {
