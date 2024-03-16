@@ -1,23 +1,121 @@
-// Wrap all code that interacts with the DOM in a call to jQuery to ensure that
-// the code isn't run until the browser has finished rendering all the elements
-// in the html.
-$(function () {
-  // TODO: Add a listener for click events on the save button. This code should
-  // use the id in the containing time-block as a key to save the user input in
-  // local storage. HINT: What does `this` reference in the click listener
-  // function? How can DOM traversal be used to get the "hour-x" id of the
-  // time-block containing the button that was clicked? How might the id be
-  // useful when saving the description in local storage?
-  //
-  // TODO: Add code to apply the past, present, or future class to each time
-  // block by comparing the id to the current hour. HINTS: How can the id
-  // attribute of each time-block be used to conditionally add or remove the
-  // past, present, and future classes? How can Day.js be used to get the
-  // current hour in 24-hour time?
-  //
-  // TODO: Add code to get any user input that was saved in localStorage and set
-  // the values of the corresponding textarea elements. HINT: How can the id
-  // attribute of each time-block be used to do this?
-  //
-  // TODO: Add code to display the current date in the header of the page.
+
+ 
+var hour = dayjs().format('hh a');
+var curTime = dayjs().format('dddd, MMMM D[th]')
+$('#currentDay').text(curTime)
+// divElements = document.querySelectorAll('div[id]');
+// divElements.forEach(divElement => {
+//      projects.push(divElement);
+
+var divElements = [];
+var projects = [];
+
+var boxes = document.querySelectorAll('.time-block');
+boxes.forEach(box => {
+   var textareaEl = box.querySelector('.description');
+  // Add an event listener to the textarea element
+    textareaEl.addEventListener('input', function() {
+      var text = textareaEl.value;
+    //  text = event.target.value;
+    // saveProjects(projects)
+    
+      // Log the textarea value to the console when input occurs
+      console.log('Textarea value:', text); 
+     })
+    
+    //box.setAttribute('style', 'background-color: yellow;');
+  
+    } ) 
+    divElements = document.querySelectorAll('div[id]');
+    divElements.forEach(divElement => {
+     projects.push(divElement);
+    })
+    saveProjects(projects)
+    readProjects()
+    printProject()
+
+// Get all div elements in the document which has id attribute
+
+    //  console.log('outerHTML = ',divElement.outerHTML)
+    // console.log(projects)
+   
+
+// // Loop through the NodeList and remove each element
+function clearPage(boxes){
+  boxes.forEach(element => {
+  element.remove();
+ });
+}
+ 
+
+
+   // equal to => $(document).ready(function()  This ensures that your JavaScript/jQuery code doesn't run until the entire HTML document is ready to be manipulated. 
+   $(function () {  
+  
+ 
 });
+
+function getTimeStat(){
+      var hram = document.querySelector('.time-block').innerHTML;
+      var hr_am = hram.substring(hram.length -2);
+      var hr = parseInt(hram.substring(0,hram.length -2))
+      var hour = dayjs().hour()
+
+      if (hr_am == 'pm') {
+         hr += 12;
+      }
+
+      if (hr === hour){
+        timeStat = 'present';
+      } else if (hr < hour) {
+        timeStat = 'past';
+      } else {
+        timeStat= 'future';
+      }
+      return timeStat;
+} 
+
+function printProject(){
+    var container = document.querySelector('.container-fluid');  
+    projects.forEach((item) => { 
+    var divElement = document.createElement('div');
+    divElement.innerHTML = item.outerHTML;
+    container.appendChild(divElement);
+    //console.log(container);
+   })
+}
+function readProjects() {
+  var projects = localStorage.getItem('projects');
+  if (projects) {
+    projects = JSON.parse(projects);
+  } else {
+    projects = [];
+  }
+  return projects;
+}
+
+
+function saveProjects(projects) {
+  localStorage.setItem('projects', JSON.stringify(projects));
+  clearPage(boxes);
+  var projects = readProjects();
+}
+ 
+// readProjects();
+
+
+ // Get the parent div element by its ID
+// const parentElement = document.getElementById('parentDiv');
+
+// // Get all child elements with different IDs that belong to the parent element
+// const childElements = parentElement.children;
+
+// // Iterate over each child element to access its unique ID
+// for (let i = 0; i < childElements.length; i++) {
+//     // Access the unique ID of each child element
+//     const uniqueID = childElements[i].id;
+
+//     // Log the unique ID to the console (or perform other operations as needed)
+//     console.log('Unique ID:', uniqueID);
+// }
+
