@@ -2,10 +2,7 @@
 var pros_exist = false;
 var pros = []
 var ids=[]
-// var advancedFormat = require('dayjs/plugin/advancedFormat')
-// dayjs.extend(advancedFormat)
-// console.log(dayjs().format('Q Do k kk X x'))
-
+ 
 var hour = dayjs().format('hh a');
 var curTime = dayjs().format('dddd, MMMM D[th]')
 $('#currentDay').text(curTime)
@@ -53,7 +50,7 @@ function getTimeStat(time,parentDiv){
   var timeStat = '';
   var hr_am = time.substring(time.length - 2);
   var hr = parseInt(time.substring(0,time.length - 2))
-  var hour = dayjs().hour()
+  var hour = dayjs().hour() -8
   
   console.log(time, hr_am)
 
